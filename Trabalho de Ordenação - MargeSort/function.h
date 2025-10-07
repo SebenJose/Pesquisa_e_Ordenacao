@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <time.h>
+#include <stdbool.h>
+#include <limits.h>
 
 // funcões para criar vetor com numeros aleatorios
 int *criaVetor(int *tamSaida);
@@ -18,4 +20,6 @@ void divideVetor(const char *arquivoEntrada, const char *prefixoSaida, int taman
 // funcao usada no qsort
 int compara(const void *a, const void *b);
 
+// função para ordenar os blocos e juntar em um arquivo final
+void ordenaVetor(int numBlocos, const char *prefixoEntrada, const char *arquivoSaida);
 #endif

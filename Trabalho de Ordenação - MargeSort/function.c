@@ -95,7 +95,68 @@ void divideVetor(const char *arquivoEntrada, const char *prefixoSaida, int taman
     fclose(entrada);
 }
 
+// funcao usada no qsort
 int compara(const void *a, const void *b)
 {
     return (*(int *)a - *(int *)b);
+}
+
+// função para ordenar os blocos e juntar em um arquivo final
+void ordenaVetor(int numBlocos, const char* prefixoEntrada, const char* arquivoSaida) {
+
+    FILE* arquivosEntrada[numBlocos];
+    char nomeArquivoEntrada[100];
+
+    for (int i = 0; i < numBlocos; i++) {
+        sprintf(nomeArquivoEntrada, "%s%d.txt", prefixoEntrada, i + 1);
+        arquivosEntrada[i] = fopen(nomeArquivoEntrada, "r");
+        
+        if (arquivosEntrada[i] == NULL) return;
+    }
+
+    FILE* saida = fopen(arquivoSaida, "w");
+    if (saida == NULL) return;
+
+    int buffer[numBlocos];
+    bool finalizados[numBlocos];
+    for (int i = 0; i < numBlocos; i++) {
+        finalizados[i] = false;
+    }
+
+    for (int i = 0; i < numBlocos; i++) {
+        if (fscanf(arquivosEntrada[i], "%d", &buffer[i]) != 1) {
+            finalizados[i] = true;
+            buffer[i] = INT_MAX;
+        }
+    }
+
+    while (true) {
+        int menorValor = INT_MAX;
+        int indiceMenor = -1;
+
+        for (int i = 0; i < numBlocos; i++) {
+            if (!finalizados[i] && buffer[i] < menorValor) {
+                menorValor = buffer[i];
+                indiceMenor = i;
+            }
+        }
+
+        if (indiceMenor == -1) {
+            break;
+        }
+
+        fprintf(saida, "%d\n", menorValor);
+
+        if (fscanf(arquivosEntrada[indiceMenor], "%d", &buffer[indiceMenor]) != 1) {
+            finalizados[indiceMenor] = true;
+            buffer[indiceMenor] = INT_MAX;
+        }
+    }
+
+    for (int i = 0; i < numBlocos; i++) {
+        fclose(arquivosEntrada[i]);
+    }
+    fclose(saida);
+
+    printf("Arquivo '%s' criado com todos os valores ordenados!\n", arquivoSaida);
 }
