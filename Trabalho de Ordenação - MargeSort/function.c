@@ -3,21 +3,22 @@
 // funcões para criar vetor com numeros aleatorios
 #define TAM 50
 
-int *criaVetor(int *tamSaida)
+int *criaVetor(int tamanhoVetor, int *tamSaida)
 {
-    int *vetor = (int *)malloc(TAM * sizeof(int));
+    int *vetor = (int *)malloc(tamanhoVetor * sizeof(int));
     if (vetor == NULL)
     {
         printf("Erro ao alocar memoria.\n");
         return NULL;
     }
 
-    for (int i = 0; i < TAM; i++)
+    for (int i = 0; i < tamanhoVetor; i++)
     {
-        vetor[i] = rand() % 100; // Números aleatórios entre 0 e 99
+        vetor[i] = rand() % 100;
     }
 
-    *tamSaida = TAM;
+    if (tamSaida != NULL)
+        *tamSaida = tamanhoVetor;
     return vetor;
 }
 
@@ -102,61 +103,72 @@ int compara(const void *a, const void *b)
 }
 
 // função para ordenar os blocos e juntar em um arquivo final
-void ordenaVetor(int numBlocos, const char* prefixoEntrada, const char* arquivoSaida) {
+void ordenaVetor(int numBlocos, const char *prefixoEntrada, const char *arquivoSaida)
+{
 
-    FILE* arquivosEntrada[numBlocos];
+    FILE *arquivosEntrada[numBlocos];
     char nomeArquivoEntrada[100];
 
-    for (int i = 0; i < numBlocos; i++) {
+    for (int i = 0; i < numBlocos; i++)
+    {
         sprintf(nomeArquivoEntrada, "%s%d.txt", prefixoEntrada, i + 1);
         arquivosEntrada[i] = fopen(nomeArquivoEntrada, "r");
-        
-        if (arquivosEntrada[i] == NULL) return;
+
+        if (arquivosEntrada[i] == NULL)
+            return;
     }
 
-    FILE* saida = fopen(arquivoSaida, "w");
-    if (saida == NULL) return;
+    FILE *saida = fopen(arquivoSaida, "w");
+    if (saida == NULL)
+        return;
 
     int buffer[numBlocos];
     bool finalizados[numBlocos];
-    for (int i = 0; i < numBlocos; i++) {
+    for (int i = 0; i < numBlocos; i++)
+    {
         finalizados[i] = false;
     }
 
-    for (int i = 0; i < numBlocos; i++) {
-        if (fscanf(arquivosEntrada[i], "%d", &buffer[i]) != 1) {
+    for (int i = 0; i < numBlocos; i++)
+    {
+        if (fscanf(arquivosEntrada[i], "%d", &buffer[i]) != 1)
+        {
             finalizados[i] = true;
             buffer[i] = INT_MAX;
         }
     }
 
-    while (true) {
+    while (true)
+    {
         int menorValor = INT_MAX;
         int indiceMenor = -1;
 
-        for (int i = 0; i < numBlocos; i++) {
-            if (!finalizados[i] && buffer[i] < menorValor) {
+        for (int i = 0; i < numBlocos; i++)
+        {
+            if (!finalizados[i] && buffer[i] < menorValor)
+            {
                 menorValor = buffer[i];
                 indiceMenor = i;
             }
         }
 
-        if (indiceMenor == -1) {
+        if (indiceMenor == -1)
+        {
             break;
         }
 
         fprintf(saida, "%d\n", menorValor);
 
-        if (fscanf(arquivosEntrada[indiceMenor], "%d", &buffer[indiceMenor]) != 1) {
+        if (fscanf(arquivosEntrada[indiceMenor], "%d", &buffer[indiceMenor]) != 1)
+        {
             finalizados[indiceMenor] = true;
             buffer[indiceMenor] = INT_MAX;
         }
     }
 
-    for (int i = 0; i < numBlocos; i++) {
+    for (int i = 0; i < numBlocos; i++)
+    {
         fclose(arquivosEntrada[i]);
     }
     fclose(saida);
-
-    printf("Arquivo '%s' criado com todos os valores ordenados!\n", arquivoSaida);
 }

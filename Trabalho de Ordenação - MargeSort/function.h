@@ -9,7 +9,7 @@
 #include <limits.h>
 
 // funcões para criar vetor com numeros aleatorios
-int *criaVetor(int *tamSaida);
+int *criaVetor(int tamanhoVetor, int *tamSaida);
 
 // função para armazenar o vetor criado em um arquivo .txt
 void salvarVetor(const int *vetor, int tamanho, const char *nomeArquivo);

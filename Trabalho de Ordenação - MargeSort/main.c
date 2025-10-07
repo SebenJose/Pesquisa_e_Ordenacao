@@ -2,42 +2,44 @@
 
 int main()
 {
-
     srand(time(NULL));
 
     int *vetor = NULL;
-    int tamanho;
+    int tamanhoVetor;
+    int tamanhoBloco = 10;
 
-    vetor = criaVetor(&tamanho);
+    printf("\nDigite o tamanho do vetor: ");
+    scanf("%d", &tamanhoVetor);
+
+    vetor = criaVetor(tamanhoVetor, NULL);
     if (vetor == NULL)
     {
         return 1;
     }
 
-    // Salvando vetor em um arquivo .txt
-    salvarVetor(vetor, tamanho, "Txt/vetor.txt");
+    salvarVetor(vetor, tamanhoVetor, "Txt/vetor.txt");
 
-    // Imprimindo vetor
     printf("\nVetor inicial: \n");
-
-    for (int i = 0; i < tamanho; i++)
+    for (int i = 0; i < tamanhoVetor; i++)
     {
         printf("%d ", vetor[i]);
     }
     printf("\n");
 
-    printf("\nVetor salvo em Txt/vetor.txt\n");
+    printf("\nVetor salvo em Txt/vetor.txt\n\n");
 
-    divideVetor("Txt/vetor.txt", "Txt/bloco", 10);
+    divideVetor("Txt/vetor.txt", "Txt/bloco", tamanhoBloco);
 
-    ordenaVetor(5, "Txt/bloco", "Txt/vetorOrdenado.txt");
+    int numBlocos = (tamanhoVetor + tamanhoBloco - 1) / tamanhoBloco;
+
+    ordenaVetor(numBlocos, "Txt/bloco", "Txt/vetorOrdenado.txt");
 
     printf("\nVetor ordenado salvo em Txt/vetorOrdenado.txt\n");
 
     printf("\nVetor ordenado: \n");
     FILE *arquivoOrdenado = fopen("Txt/vetorOrdenado.txt", "r");
-
-    if (arquivoOrdenado == NULL) return 1;
+    if (arquivoOrdenado == NULL)
+        return 1;
 
     int valor;
     while (fscanf(arquivoOrdenado, "%d", &valor) == 1)
